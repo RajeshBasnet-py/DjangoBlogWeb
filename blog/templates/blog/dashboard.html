@@ -1,0 +1,46 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Add article{% endblock %}
+
+{% block content %}
+    <div class="dashboard-header">
+        <h1>Add article</h1>
+        <p><a href="{% url 'article_create' %}" class="btn btn-primary">Add New Article</a></p>
+    </div>
+
+    {% if articles %}
+        <div class="articles-list">
+            {% for article in articles %}
+                <div class="article-item">
+                    <h2><a href="{% url 'article_edit' article.slug %}">{{ article.title }}</a></h2>
+                    <div class="meta">
+                        <span class="date">{{ article.date_published|date:"F j, Y" }}</span>
+                    </div>
+                    <div class="article-actions">
+                        <a href="{% url 'article_edit' article.slug %}" class="btn btn-secondary">Edit</a>
+                        <a href="{% url 'article_delete' article.slug %}" class="btn btn-danger" 
+                           onclick="return confirm('Are you sure you want to delete this article?')">Delete</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination (if applicable) -->
+        <div class="pagination">
+            {% if articles.has_previous %}
+                <a href="?page=1">&laquo; First</a>
+                <a href="?page={{ articles.previous_page_number }}">Previous</a>
+            {% endif %}
+            
+            <span>Page {{ articles.number }} of {{ articles.paginator.num_pages }}</span>
+            
+            {% if articles.has_next %}
+                <a href="?page={{ articles.next_page_number }}">Next</a>
+                <a href="?page={{ articles.paginator.num_pages }}">Last &raquo;</a>
+            {% endif %}
+        </div>
+
+    {% else %}
+        <p>No articles found. <a href="{% url 'article_create' %}">Add a new article</a>.</p>
+    {% endif %}
+{% endblock %}
